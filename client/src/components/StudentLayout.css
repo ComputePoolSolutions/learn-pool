@@ -1,0 +1,137 @@
+.student-layout {
+  min-height: 100vh;
+  display: flex;
+  background: #f5f7fa;
+}
+
+.student-sidebar {
+  width: 314px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #4149dc 0%, #4017b5 100%);
+  color: white;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: auto;
+}
+
+.student-profile {
+  height: 242px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.profile-avatar {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: #c1df8b;
+  border: 4px solid #6475f5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.avatar-head {
+  width: 43px;
+  height: 43px;
+  background: #f1b27d;
+  border-radius: 50%;
+  position: absolute;
+  top: 20px;
+  left: 27px;
+}
+
+.avatar-head::before {
+  content: "";
+  position: absolute;
+  width: 48px;
+  height: 25px;
+  background: #382017;
+  border-radius: 50% 50% 35% 35%;
+  top: -7px;
+  left: -3px;
+}
+
+.avatar-body {
+  width: 62px;
+  height: 43px;
+  background: #202020;
+  border-radius: 35px 35px 0 0;
+  position: absolute;
+  bottom: -3px;
+  left: 17px;
+}
+
+.student-profile h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.student-profile p {
+  margin: 5px 0 0;
+  font-size: 17px;
+}
+
+.student-nav {
+  padding: 26px 13px;
+}
+
+.student-nav a {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 54px;
+  padding: 0 18px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  color: #e4e5ff;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.student-nav a span {
+  width: 25px;
+  text-align: center;
+  font-size: 21px;
+}
+
+.student-nav a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.student-nav a.active {
+  background: #4775e8;
+  color: white;
+}
+
+.student-main {
+  margin-left: 314px;
+  width: calc(100% - 314px);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .student-sidebar {
+    width: 230px;
+  }
+
+  .student-main {
+    margin-left: 230px;
+    width: calc(100% - 230px);
+  }
+
+  .student-nav a {
+    font-size: 15px;
+  }
+}

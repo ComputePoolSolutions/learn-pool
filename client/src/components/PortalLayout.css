@@ -1,0 +1,508 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fb;
+}
+
+.portal-container {
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar {
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+
+    background: linear-gradient(
+        90deg,
+        #405de6,
+        #5b2acb,
+        #6720a9
+    );
+
+    padding: 0 18px;
+
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.15);
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1000;
+}
+
+/* LOGO */
+
+.logo-section {
+    width: 285px;
+
+    display: flex;
+    align-items: center;
+}
+
+.portal-logo {
+    width: 110px;
+    height: 48px;
+
+    object-fit: contain;
+
+    background: white;
+
+    border-radius: 8px;
+}
+
+/* SEARCH */
+
+.search-section {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    margin-right: 20px;
+}
+
+.top-search {
+    width: 100%;
+    height: 54px;
+
+    border: none;
+    outline: none;
+
+    border-radius: 10px;
+
+    padding: 0 20px;
+
+    font-size: 18px;
+
+    color: white;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    border: 1px solid rgba(
+        255,
+        255,
+        255,
+        0.15
+    );
+}
+
+.top-search::placeholder {
+    color: rgba(
+        255,
+        255,
+        255,
+        0.75
+    );
+}
+
+/* LOGOUT */
+
+.logout-button {
+    height: 54px;
+
+    padding: 0 25px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: rgba(
+        255,
+        255,
+        255,
+        0.15
+    );
+
+    color: white;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.logout-button:hover {
+    background: rgba(
+        255,
+        255,
+        255,
+        0.25
+    );
+}
+
+.logout-icon {
+    font-size: 22px;
+    margin-right: 8px;
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+.portal-body {
+    display: flex;
+
+    padding-top: 70px;
+
+    min-height: 100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+    width: 305px;
+
+    min-height: calc(100vh - 70px);
+
+    background: linear-gradient(
+        180deg,
+        #4049d9,
+        #4222ba,
+        #4a17a9
+    );
+
+    position: fixed;
+
+    left: 0;
+    top: 70px;
+    bottom: 0;
+
+    overflow-y: auto;
+}
+
+
+/* PROFILE */
+
+.profile-section {
+    height: 235px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    border-bottom: 1px solid
+        rgba(255, 255, 255, 0.15);
+
+    color: white;
+}
+
+.avatar-circle {
+    width: 105px;
+    height: 105px;
+
+    border-radius: 50%;
+
+    background: #c6df85;
+
+    border: 5px solid
+        rgba(255, 255, 255, 0.35);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    box-shadow:
+        0 5px 15px
+        rgba(0, 0, 0, 0.3);
+
+    overflow: hidden;
+
+    margin-bottom: 15px;
+}
+
+.avatar-person {
+    font-size: 65px;
+}
+
+.profile-section h3 {
+    margin: 0;
+
+    font-size: 20px;
+
+    font-weight: 700;
+}
+
+.profile-section p {
+    margin: 7px 0 0;
+
+    font-size: 17px;
+}
+
+
+/* MENU */
+
+.side-menu {
+    padding: 15px 10px;
+}
+
+.menu-item {
+    height: 58px;
+
+    margin-bottom: 7px;
+
+    padding: 0 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    border-radius: 10px;
+
+    color: rgba(
+        255,
+        255,
+        255,
+        0.8
+    );
+
+    text-decoration: none;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.menu-item:hover {
+    background: rgba(
+        255,
+        255,
+        255,
+        0.12
+    );
+
+    color: white;
+}
+
+.menu-item.active {
+    background: linear-gradient(
+        90deg,
+        #4770e9,
+        #4966df
+    );
+
+    color: white;
+
+    box-shadow:
+        0 5px 15px
+        rgba(0, 0, 0, 0.15);
+}
+
+.menu-icon {
+    width: 30px;
+
+    font-size: 22px;
+
+    text-align: center;
+}
+
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.main-content {
+    margin-left: 305px;
+
+    width: calc(100% - 305px);
+
+    min-height: calc(100vh - 70px);
+
+    padding: 30px 35px;
+
+    background: #f7f8fa;
+}
+
+
+/* =========================
+   COMMON PAGE ELEMENTS
+========================= */
+
+.page-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    border-bottom: 1px solid #ddd;
+
+    padding-bottom: 15px;
+
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    margin: 0;
+
+    font-size: 36px;
+
+    color: #111827;
+}
+
+.primary-button {
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 13px 22px;
+
+    background: linear-gradient(
+        90deg,
+        #405de6,
+        #4dc9e8
+    );
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 12px
+        rgba(65, 90, 220, 0.25);
+}
+
+.secondary-button {
+    border: 1px solid #aaa;
+
+    background: white;
+
+    border-radius: 8px;
+
+    padding: 12px 18px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+.info-box {
+    background: #cff4fc;
+
+    border-radius: 10px;
+
+    padding: 20px;
+
+    color: #075985;
+
+    font-size: 17px;
+
+    margin-bottom: 25px;
+}
+
+.content-card {
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 3px 15px
+        rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+    .logo-section {
+        width: 180px;
+    }
+
+    .sidebar {
+        width: 230px;
+    }
+
+    .main-content {
+        margin-left: 230px;
+
+        width: calc(100% - 230px);
+    }
+
+    .menu-item {
+        font-size: 16px;
+    }
+
+    .top-search {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .sidebar {
+        width: 75px;
+    }
+
+    .profile-section h3,
+    .profile-section p,
+    .menu-item span:not(.menu-icon) {
+        display: none;
+    }
+
+    .profile-section {
+        height: 150px;
+    }
+
+    .avatar-circle {
+        width: 60px;
+        height: 60px;
+    }
+
+    .avatar-person {
+        font-size: 38px;
+    }
+
+    .main-content {
+        margin-left: 75px;
+
+        width: calc(100% - 75px);
+
+        padding: 20px;
+    }
+
+    .logo-section {
+        width: 150px;
+    }
+
+    .portal-logo {
+        width: 100px;
+    }
+
+    .logout-button {
+        padding: 0 12px;
+        font-size: 14px;
+    }
+}
