@@ -1,137 +1,217 @@
-import { Link, useLocation } from "react-router-dom";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 function Sidebar({ role }) {
-
-    const location = useLocation();
-
-    const isActive = (path) => {
-        return location.pathname === path
-            ? "sidebar-item active"
-            : "sidebar-item";
-    };
-
     const studentMenu = [
         {
             name: "Dashboard",
-            icon: "🏠",
-            path: "/student/dashboard"
+            path: "/student/dashboard",
+            icon: "⌂"
+        },
+        {
+            name: "My Courses",
+            path: "/student/courses",
+            icon: "▣"
         },
         {
             name: "Assignments",
-            icon: "☷",
-            path: "/student/assignments"
-        },
-        {
-            name: "Reports",
-            icon: "📊",
-            path: "/student/reports"
-        },
-        {
-            name: "File Storage",
-            icon: "📁",
-            path: "/student/files"
-        },
-        {
-            name: "Inbox",
-            icon: "✉",
-            path: "/student/inbox"
+            path: "/student/assignments",
+            icon: "☷"
         },
         {
             name: "Classroom",
-            icon: "👥",
-            path: "/student/classroom"
+            path: "/student/classroom",
+            icon: "▣"
+        },
+        {
+            name: "Files",
+            path: "/student/files",
+            icon: "▰"
+        },
+        {
+            name: "Inbox",
+            path: "/student/inbox",
+            icon: "✉"
+        },
+        {
+            name: "Reports",
+            path: "/student/reports",
+            icon: "▥"
         },
         {
             name: "Settings",
-            icon: "⚙",
-            path: "/student/settings"
+            path: "/student/settings",
+            icon: "⚙"
+        },
+        {
+            name: "Certificates",
+            path: "/student/certificates",
+            icon: "◇"
         }
     ];
 
     const instructorMenu = [
         {
             name: "Dashboard",
-            icon: "🏠",
-            path: "/instructor/dashboard"
+            path: "/instructor/dashboard",
+            icon: "⌂"
+        },
+        {
+            name: "Courses",
+            path: "/instructor/courses",
+            icon: "▣"
+        },
+        {
+            name: "Students",
+            path: "/instructor/students",
+            icon: "♙"
+        },
+        {
+            name: "Classes",
+            path: "/instructor/classroom",
+            icon: "▣"
         },
         {
             name: "Assignments",
-            icon: "☷",
-            path: "/instructor/assignments"
+            path: "/instructor/assignments",
+            icon: "☷"
         },
         {
             name: "Reports",
-            icon: "📊",
-            path: "/instructor/reports"
+            path: "/instructor/reports",
+            icon: "▥"
         },
         {
-            name: "File Storage",
-            icon: "📁",
-            path: "/instructor/files"
-        },
-        {
-            name: "Inbox",
-            icon: "✉",
-            path: "/instructor/inbox"
-        },
-        {
-            name: "Classroom",
-            icon: "👥",
-            path: "/instructor/classroom"
+            name: "Messages",
+            path: "/instructor/inbox",
+            icon: "✉"
         },
         {
             name: "Settings",
-            icon: "⚙",
-            path: "/instructor/settings"
+            path: "/instructor/settings",
+            icon: "⚙"
         }
     ];
 
-    const menu =
-        role === "instructor"
-            ? instructorMenu
-            : studentMenu;
+    const adminMenu = [
+        {
+            name: "Dashboard",
+            path: "/admin/dashboard",
+            icon: "⌂"
+        },
+        {
+            name: "Users",
+            path: "/admin/users",
+            icon: "♙"
+        },
+        {
+            name: "Roles",
+            path: "/admin/roles",
+            icon: "◆"
+        },
+        {
+            name: "Courses",
+            path: "/admin/courses",
+            icon: "▣"
+        },
+        {
+            name: "Enrollments",
+            path: "/admin/enrollments",
+            icon: "☷"
+        },
+        {
+            name: "Classes",
+            path: "/admin/classes",
+            icon: "▣"
+        },
+        {
+            name: "Assignments",
+            path: "/admin/assignments",
+            icon: "☷"
+        },
+        {
+            name: "Files",
+            path: "/admin/files",
+            icon: "▰"
+        },
+        {
+            name: "Announcements",
+            path: "/admin/announcements",
+            icon: "!"
+        },
+        {
+            name: "Reports",
+            path: "/admin/reports",
+            icon: "▥"
+        },
+        {
+            name: "Certificates",
+            path: "/admin/certificates",
+            icon: "◇"
+        },
+        {
+            name: "Audit Logs",
+            path: "/admin/audit-logs",
+            icon: "▤"
+        },
+        {
+            name: "System Settings",
+            path: "/admin/settings",
+            icon: "⚙"
+        }
+    ];
 
-    const user =
-        JSON.parse(localStorage.getItem("user")) || {};
+    let menu = studentMenu;
+
+    if (role === "instructor") {
+        menu = instructorMenu;
+    }
+
+    if (role === "admin") {
+        menu = adminMenu;
+    }
+
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    const displayName =
+        user.name ||
+        (role === "student"
+            ? "Demo Student"
+            : role === "instructor"
+            ? "Demo Instructor"
+            : "Administrator");
 
     return (
         <aside className="sidebar">
 
             <div className="profile-section">
 
-                <img
-                    src="/avatar.png"
-                    alt="Profile"
-                    className="profile-image"
-                />
-
-                <div className="profile-name">
-                    {user.name ||
-                        (role === "instructor"
-                            ? "Instructor User"
-                            : "Demo User")}
+                <div className="profile-avatar">
+                    {displayName.charAt(0).toUpperCase()}
                 </div>
 
-                <div className="profile-username">
-                    @{user.email
-                        ? user.email.split("@")[0]
-                        : role === "instructor"
-                            ? "instructor"
-                            : "demo"}
+                <div className="profile-name">
+                    {displayName}
+                </div>
+
+                <div className="profile-role">
+                    @{role || "user"}
                 </div>
 
             </div>
 
-            <div className="sidebar-menu">
+            <nav className="sidebar-menu">
 
                 {menu.map((item) => (
-
-                    <Link
+                    <NavLink
                         key={item.path}
                         to={item.path}
-                        className={isActive(item.path)}
+                        className={({ isActive }) =>
+                            isActive
+                                ? "sidebar-link active"
+                                : "sidebar-link"
+                        }
                     >
-
                         <span className="sidebar-icon">
                             {item.icon}
                         </span>
@@ -139,12 +219,10 @@ function Sidebar({ role }) {
                         <span>
                             {item.name}
                         </span>
-
-                    </Link>
-
+                    </NavLink>
                 ))}
 
-            </div>
+            </nav>
 
         </aside>
     );

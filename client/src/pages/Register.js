@@ -1,18 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
 
+    const navigate = useNavigate();
+
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
     const [role, setRole] = useState("student");
-
     const [message, setMessage] = useState("");
-
-    const navigate = useNavigate();
 
     const handleRegister = async (e) => {
 
@@ -31,12 +29,13 @@ function Register() {
             );
 
             setMessage(
-                response.data.message
+                response.data.message ||
+                "Registration successful"
             );
 
             setTimeout(() => {
                 navigate("/login");
-            }, 1500);
+            }, 1000);
 
         } catch (error) {
 
@@ -49,101 +48,138 @@ function Register() {
     };
 
     return (
+
         <div className="login-page">
 
-            <div className="login-card">
+            <div className="login-overlay"></div>
 
-                <img
-                    src="/learnpool-logo.png"
-                    alt="LearnPool"
-                    className="login-logo"
-                />
+            <div className="login-card register-card">
 
-                <h1 className="login-title">
-                    Create Account
+                <div className="logo-circle">
+                    LP
+                </div>
+
+                <h1>
+                    Create LearnPool Account
                 </h1>
 
-                <div className="role-buttons">
-
-                    <button
-                        type="button"
-                        className={
-                            role === "student"
-                                ? "role-button active"
-                                : "role-button"
-                        }
-                        onClick={() =>
-                            setRole("student")
-                        }
-                    >
-                        🎓 Student
-                    </button>
-
-                    <button
-                        type="button"
-                        className={
-                            role === "instructor"
-                                ? "role-button active"
-                                : "role-button"
-                        }
-                        onClick={() =>
-                            setRole("instructor")
-                        }
-                    >
-                        👨‍🏫 Instructor
-                    </button>
-
-                </div>
+                <p className="login-subtitle">
+                    Join the LearnPool learning platform
+                </p>
 
                 <form onSubmit={handleRegister}>
 
-                    <input
-                        className="login-input"
-                        type="text"
-                        placeholder="Enter full name"
-                        value={name}
-                        onChange={(e) =>
-                            setName(e.target.value)
-                        }
-                        required
-                    />
+                    <div className="input-group">
 
-                    <input
-                        className="login-input"
-                        type="email"
-                        placeholder="Enter email"
-                        value={email}
-                        onChange={(e) =>
-                            setEmail(e.target.value)
-                        }
-                        required
-                    />
+                        <label>Full Name</label>
 
-                    <input
-                        className="login-input"
-                        type="password"
-                        placeholder="Enter password"
-                        value={password}
-                        onChange={(e) =>
-                            setPassword(e.target.value)
-                        }
-                        required
-                    />
+                        <div className="input-wrapper">
+
+                            <span>👤</span>
+
+                            <input
+                                type="text"
+                                placeholder="Enter your name"
+                                value={name}
+                                onChange={(e) =>
+                                    setName(e.target.value)
+                                }
+                                required
+                            />
+
+                        </div>
+
+                    </div>
+
+                    <div className="input-group">
+
+                        <label>Email</label>
+
+                        <div className="input-wrapper">
+
+                            <span>✉</span>
+
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) =>
+                                    setEmail(e.target.value)
+                                }
+                                required
+                            />
+
+                        </div>
+
+                    </div>
+
+                    <div className="input-group">
+
+                        <label>Password</label>
+
+                        <div className="input-wrapper">
+
+                            <span>🔒</span>
+
+                            <input
+                                type="password"
+                                placeholder="Create password"
+                                value={password}
+                                onChange={(e) =>
+                                    setPassword(e.target.value)
+                                }
+                                required
+                            />
+
+                        </div>
+
+                    </div>
+
+                    <div className="input-group">
+
+                        <label>Role</label>
+
+                        <select
+                            className="role-select"
+                            value={role}
+                            onChange={(e) =>
+                                setRole(e.target.value)
+                            }
+                        >
+                            <option value="student">
+                                Student
+                            </option>
+
+                            <option value="instructor">
+                                Instructor
+                            </option>
+                        </select>
+
+                    </div>
 
                     <button
-                        className="login-button"
                         type="submit"
+                        className="login-button"
                     >
-                        Register
+                        Create Account
                     </button>
 
                 </form>
 
                 {message && (
-                    <div className="login-message">
+                    <div className="login-message success">
                         {message}
                     </div>
                 )}
+
+                <button
+                    className="back-login"
+                    onClick={() =>
+                        navigate("/login")
+                    }
+                >
+                    ← Back to Login
+                </button>
 
             </div>
 

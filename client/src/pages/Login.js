@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./Login.css";
+
+import "../../src/styles.css";
 
 function Login() {
-    const [role, setRole] = useState("student");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [role, setRole] = useState("student");
     const [rememberMe, setRememberMe] = useState(false);
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -18,99 +20,134 @@ function Login() {
         setMessage("");
 
         if (!email || !password) {
-            setMessage("Please enter email and password.");
+            setMessage("Please enter email and password");
             return;
         }
+
+        setLoading(true);
 
         try {
             const response = await axios.post(
                 "http://localhost:5000/api/auth/login",
                 {
-                    email,
-                    password
+                    email: email.trim(),
+                    password: password
                 }
             );
 
-            const loggedInUser = response.data.user;
+            console.log("LOGIN RESPONSE:", response.data);
 
-            // Save login information
-            localStorage.setItem(
-                "token",
-                response.data.token
-            );
+            const token = response.data.token;
+            const user = response.data.user;
 
-            localStorage.setItem(
-                "user",
-                JSON.stringify(loggedInUser)
-            );
+            if (!token || !user) {
+                setMessage("Invalid response from server");
+                setLoading(false);
+                return;
+            }
 
             if (rememberMe) {
+                localStorage.setItem("token", token);
                 localStorage.setItem(
-                    "rememberMe",
-                    "true"
+                    "user",
+                    JSON.stringify(user)
                 );
             } else {
-                localStorage.removeItem("rememberMe");
+                sessionStorage.setItem("token", token);
+                sessionStorage.setItem(
+                    "user",
+                    JSON.stringify(user)
+                );
             }
 
             setMessage("Login successful!");
 
-            // Navigate according to actual role
-            if (loggedInUser.role === "student") {
-                navigate("/student/dashboard");
-            } else if (loggedInUser.role === "instructor") {
-                navigate("/instructor/dashboard");
-            } else if (loggedInUser.role === "admin") {
-                navigate("/admin/dashboard");
-            } else {
-                setMessage("Invalid user role.");
-            }
+            // Use the role returned by backend
+            const userRole = user.role;
+
+            setTimeout(() => {
+                if (userRole === "student") {
+                    navigate("/student/dashboard");
+                } else if (userRole === "instructor") {
+                    navigate("/instructor/dashboard");
+                } else if (userRole === "admin") {
+                    navigate("/admin/dashboard");
+                } else {
+                    setMessage("Invalid user role");
+                }
+            }, 500);
 
         } catch (error) {
-            console.error("Login error:", error);
+            console.error("LOGIN ERROR:", error);
 
-            setMessage(
-                error.response?.data?.message ||
-                "Invalid email or password."
-            );
+            if (error.response) {
+                setMessage(
+                    error.response.data?.message ||
+                    "Login failed"
+                );
+            } else if (error.request) {
+                setMessage(
+                    "Cannot connect to server. Please start the backend."
+                );
+            } else {
+                setMessage("Login failed");
+            }
         }
+
+        setLoading(false);
     };
 
     return (
-        <div className="login-page">
+        <div
+            className="login-page"
+            style={{
+                backgroundImage: `
+                    linear-gradient(
+                        rgba(220, 232, 245, 0.45),
+                        rgba(80, 100, 130, 0.35)
+                    ),
+                    url("/login-bg.jpg")
+                `
+            }}
+        >
 
-            {/* Background overlay */}
             <div className="login-overlay"></div>
 
-            {/* Login Card */}
             <div className="login-card">
 
-                {/* Logo */}
-                <div className="login-logo-container">
-                    <div className="company-logo">
-                        <div className="logo-chip">B</div>
-                        <div className="logo-company">
-                            COMPUTEPOOL
-                        </div>
-                        <div className="logo-solutions">
-                            SOLUTIONS
-                        </div>
-                    </div>
+                {/* LOGO */}
+
+                <div className="login-logo">
+
+                    <img
+                        src="/compute-pool-logo.png"
+                        alt="ComputePool Solutions"
+                        className="login-logo-image"
+                    />
+
                 </div>
 
-                {/* Heading */}
-                <h1 className="login-title">
+
+                {/* TITLE */}
+
+                <h1>
                     Welcome to LearnPool
                 </h1>
 
-                {/* Role Buttons */}
-                <div className="role-buttons">
+                <p className="login-subtitle">
+                    Login to continue learning
+                </p>
+
+
+                {/* ROLE SELECTOR */}
+
+                <div className="role-selector">
 
                     <button
                         type="button"
                         className={
                             role === "student"
-                                ? "role-button active"
+                                ? "role-button selected"
                                 : "role-button"
                         }
                         onClick={() => setRole("student")}
@@ -122,62 +159,87 @@ function Login() {
                         type="button"
                         className={
                             role === "instructor"
-                                ? "role-button active"
+                                ? "role-button selected"
                                 : "role-button"
                         }
                         onClick={() => setRole("instructor")}
                     >
-                        🧑‍🏫 Instructor
+                        👨‍🏫 Instructor
                     </button>
 
                 </div>
 
-                {/* Login Form */}
-                <form
-                    className="login-form"
-                    onSubmit={handleLogin}
-                >
 
-                    {/* Email */}
+                {/* LOGIN FORM */}
+
+                <form onSubmit={handleLogin}>
+
+                    {/* EMAIL */}
+
                     <div className="input-group">
 
-                        <span className="input-icon">
-                            👤
-                        </span>
+                        <label htmlFor="email">
+                            Email
+                        </label>
 
-                        <input
-                            type="email"
-                            placeholder="Enter email"
-                            value={email}
-                            onChange={(e) =>
-                                setEmail(e.target.value)
-                            }
-                        />
+                        <div className="input-wrapper">
+
+                            <span>
+                                👤
+                            </span>
+
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) =>
+                                    setEmail(e.target.value)
+                                }
+                                autoComplete="email"
+                            />
+
+                        </div>
 
                     </div>
 
-                    {/* Password */}
+
+                    {/* PASSWORD */}
+
                     <div className="input-group">
 
-                        <span className="input-icon">
-                            🔒
-                        </span>
+                        <label htmlFor="password">
+                            Password
+                        </label>
 
-                        <input
-                            type="password"
-                            placeholder="Enter password"
-                            value={password}
-                            onChange={(e) =>
-                                setPassword(e.target.value)
-                            }
-                        />
+                        <div className="input-wrapper">
+
+                            <span>
+                                🔒
+                            </span>
+
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) =>
+                                    setPassword(e.target.value)
+                                }
+                                autoComplete="current-password"
+                            />
+
+                        </div>
 
                     </div>
 
-                    {/* Remember Me */}
+
+                    {/* REMEMBER ME */}
+
                     <div className="remember-row">
 
-                        <label>
+                        <label className="remember-label">
+
                             <input
                                 type="checkbox"
                                 checked={rememberMe}
@@ -189,47 +251,65 @@ function Login() {
                             <span>
                                 Remember me
                             </span>
+
                         </label>
+
+
+                        <button
+                            type="button"
+                            className="forgot-button"
+                            onClick={() =>
+                                alert(
+                                    "Forgot password feature will be added soon."
+                                )
+                            }
+                        >
+                            Forgot password?
+                        </button>
 
                     </div>
 
-                    {/* Login Message */}
-                    {message && (
-                        <div
-                            className={
-                                message === "Login successful!"
-                                    ? "login-message success"
-                                    : "login-message error"
-                            }
-                        >
-                            {message}
-                        </div>
-                    )}
 
-                    {/* Sign In Button */}
+                    {/* LOGIN BUTTON */}
+
                     <button
                         type="submit"
-                        className="signin-button"
+                        className="login-button"
+                        disabled={loading}
                     >
-                        Sign In
-                    </button>
-
-                    {/* Forgot Password */}
-                    <button
-                        type="button"
-                        className="forgot-password"
-                        onClick={() =>
-                            alert(
-                                "Password recovery will be added later."
-                            )
-                        }
-                    >
-                        Forgot password?
+                        {loading
+                            ? "Signing In..."
+                            : "Sign In"}
                     </button>
 
                 </form>
 
+
+                {/* MESSAGE */}
+
+                {message && (
+                    <div
+                        className={
+                            message.toLowerCase().includes("success")
+                                ? "login-message success"
+                                : "login-message error"
+                        }
+                    >
+                        {message}
+                    </div>
+                )}
+
+
+                {/* FOOTER */}
+
+                <div className="login-footer">
+                    LearnPool
+                    <span>•</span>
+                    ComputePool Solutions
+                </div>
+
             </div>
+
         </div>
     );
 }

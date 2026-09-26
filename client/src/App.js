@@ -1,147 +1,606 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    Navigate
+} from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
 
-import StudentLayout from "./components/StudentLayout";
+import PortalLayout from "./components/PortalLayout";
+import FeaturePage from "./components/FeaturePage";
 
-import StudentDashboard from "./pages/student/StudentDashboard";
-import MyCourses from "./pages/student/MyCourses";
-import CourseDetails from "./pages/student/CourseDetails";
-import StudentAssignments from "./pages/student/Assignments";
-import StudentClassroom from "./pages/student/Classroom";
-import StudentFiles from "./pages/student/Files";
-import StudentInbox from "./pages/student/Inbox";
-import StudentReports from "./pages/student/Reports";
-import StudentSettings from "./pages/student/Settings";
-import Certificates from "./pages/student/Certificates";
+import "./App.css";
+import "./styles.css";
 
-import InstructorDashboard from "./pages/instructor/InstructorDashboard";
-import InstructorCourses from "./pages/instructor/MyCourses";
-import InstructorStudents from "./pages/instructor/Students";
-import InstructorAssignments from "./pages/instructor/Assignments";
-import InstructorClassroom from "./pages/instructor/Classroom";
-import InstructorFiles from "./pages/instructor/Files";
-import InstructorInbox from "./pages/instructor/Inbox";
-import InstructorReports from "./pages/instructor/Reports";
-import InstructorSettings from "./pages/instructor/Settings";
+
+function ProtectedRoute({ children, allowedRole }) {
+
+    const token = localStorage.getItem("token");
+
+    const user = JSON.parse(
+        localStorage.getItem("user") || "{}"
+    );
+
+    if (!token) {
+        return <Navigate to="/login" replace />;
+    }
+
+    if (
+        allowedRole &&
+        user.role !== allowedRole
+    ) {
+        if (user.role === "student") {
+            return (
+                <Navigate
+                    to="/student/dashboard"
+                    replace
+                />
+            );
+        }
+
+        if (user.role === "instructor") {
+            return (
+                <Navigate
+                    to="/instructor/dashboard"
+                    replace
+                />
+            );
+        }
+
+        if (user.role === "admin") {
+            return (
+                <Navigate
+                    to="/admin/dashboard"
+                    replace
+                />
+            );
+        }
+
+        return <Navigate to="/login" replace />;
+    }
+
+    return children;
+}
+
+
+/* ============================= */
+/* FEATURE ROUTE HELPER */
+/* ============================= */
+
+function StudentFeature({
+    title,
+    subtitle,
+    icon,
+    buttonText
+}) {
+
+    return (
+        <PortalLayout role="student">
+
+            <FeaturePage
+                title={title}
+                subtitle={subtitle}
+                icon={icon}
+                buttonText={buttonText}
+            />
+
+        </PortalLayout>
+    );
+}
+
+
+function InstructorFeature({
+    title,
+    subtitle,
+    icon,
+    buttonText
+}) {
+
+    return (
+        <PortalLayout role="instructor">
+
+            <FeaturePage
+                title={title}
+                subtitle={subtitle}
+                icon={icon}
+                buttonText={buttonText}
+            />
+
+        </PortalLayout>
+    );
+}
+
+
+function AdminFeature({
+    title,
+    subtitle,
+    icon,
+    buttonText
+}) {
+
+    return (
+        <PortalLayout role="admin">
+
+            <FeaturePage
+                title={title}
+                subtitle={subtitle}
+                icon={icon}
+                buttonText={buttonText}
+            />
+
+        </PortalLayout>
+    );
+}
+
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
 
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    return (
 
-        <Route element={<StudentLayout />}>
+        <BrowserRouter>
 
-          <Route
-            path="/student/dashboard"
-            element={<StudentDashboard />}
-          />
+            <Routes>
 
-          <Route
-            path="/student/courses"
-            element={<MyCourses />}
-          />
+                {/* ========================= */}
+                {/* PUBLIC */}
+                {/* ========================= */}
 
-          <Route
-            path="/student/course/:id"
-            element={<CourseDetails />}
-          />
+                <Route
+                    path="/"
+                    element={
+                        <Navigate
+                            to="/login"
+                            replace
+                        />
+                    }
+                />
 
-          <Route
-            path="/student/assignments"
-            element={<StudentAssignments />}
-          />
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
 
-          <Route
-            path="/student/classroom"
-            element={<StudentClassroom />}
-          />
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
 
-          <Route
-            path="/student/files"
-            element={<StudentFiles />}
-          />
 
-          <Route
-            path="/student/inbox"
-            element={<StudentInbox />}
-          />
+                {/* ========================= */}
+                {/* STUDENT */}
+                {/* ========================= */}
 
-          <Route
-            path="/student/reports"
-            element={<StudentReports />}
-          />
+                <Route
+                    path="/student/dashboard"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <Dashboard role="student" />
+                        </ProtectedRoute>
+                    }
+                />
 
-          <Route
-            path="/student/settings"
-            element={<StudentSettings />}
-          />
+                <Route
+                    path="/student/courses"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <StudentFeature
+                                title="My Courses"
+                                subtitle="View and manage your enrolled courses"
+                                icon="▣"
+                                buttonText="Browse Courses"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-          <Route
-            path="/student/certificates"
-            element={<Certificates />}
-          />
+                <Route
+                    path="/student/course/:id"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <StudentFeature
+                                title="Course Details"
+                                subtitle="View classes, assignments, materials and progress"
+                                icon="▣"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-        </Route>
+                <Route
+                    path="/student/assignments"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <StudentFeature
+                                title="Assignments"
+                                subtitle="View, download and submit your assignments"
+                                icon="☷"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/instructor/dashboard"
-          element={<InstructorDashboard />}
-        />
+                <Route
+                    path="/student/classroom"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <StudentFeature
+                                title="Virtual Classroom"
+                                subtitle="Live, upcoming and completed classes"
+                                icon="▣"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/instructor/courses"
-          element={<InstructorCourses />}
-        />
+                <Route
+                    path="/student/files"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <StudentFeature
+                                title="File Storage"
+                                subtitle="Access your course files and materials"
+                                icon="▰"
+                                buttonText="Upload File"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/instructor/students"
-          element={<InstructorStudents />}
-        />
+                <Route
+                    path="/student/inbox"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <StudentFeature
+                                title="Inbox"
+                                subtitle="View messages and announcements"
+                                icon="✉"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/instructor/assignments"
-          element={<InstructorAssignments />}
-        />
+                <Route
+                    path="/student/reports"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <StudentFeature
+                                title="Reports"
+                                subtitle="View your learning progress and performance"
+                                icon="▥"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/instructor/classroom"
-          element={<InstructorClassroom />}
-        />
+                <Route
+                    path="/student/settings"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <StudentFeature
+                                title="Settings"
+                                subtitle="Manage your LearnPool account settings"
+                                icon="⚙"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/instructor/files"
-          element={<InstructorFiles />}
-        />
+                <Route
+                    path="/student/certificates"
+                    element={
+                        <ProtectedRoute allowedRole="student">
+                            <StudentFeature
+                                title="Certificates"
+                                subtitle="View and download your certificates"
+                                icon="◇"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/instructor/inbox"
-          element={<InstructorInbox />}
-        />
 
-        <Route
-          path="/instructor/reports"
-          element={<InstructorReports />}
-        />
+                {/* ========================= */}
+                {/* INSTRUCTOR */}
+                {/* ========================= */}
 
-        <Route
-          path="/instructor/settings"
-          element={<InstructorSettings />}
-        />
+                <Route
+                    path="/instructor/dashboard"
+                    element={
+                        <ProtectedRoute allowedRole="instructor">
+                            <Dashboard role="instructor" />
+                        </ProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="*"
-          element={<Navigate to="/login" replace />}
-        />
+                <Route
+                    path="/instructor/courses"
+                    element={
+                        <ProtectedRoute allowedRole="instructor">
+                            <InstructorFeature
+                                title="Courses"
+                                subtitle="Manage your courses and enrolled students"
+                                icon="▣"
+                                buttonText="New Course"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
 
-      </Routes>
-    </BrowserRouter>
-  );
+                <Route
+                    path="/instructor/students"
+                    element={
+                        <ProtectedRoute allowedRole="instructor">
+                            <InstructorFeature
+                                title="Students"
+                                subtitle="View students enrolled in your courses"
+                                icon="♙"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/instructor/classroom"
+                    element={
+                        <ProtectedRoute allowedRole="instructor">
+                            <InstructorFeature
+                                title="Classroom"
+                                subtitle="Create and manage live classes"
+                                icon="▣"
+                                buttonText="Create Class"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/instructor/assignments"
+                    element={
+                        <ProtectedRoute allowedRole="instructor">
+                            <InstructorFeature
+                                title="Assignments"
+                                subtitle="Create, publish, grade and provide feedback"
+                                icon="☷"
+                                buttonText="New Assignment"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/instructor/reports"
+                    element={
+                        <ProtectedRoute allowedRole="instructor">
+                            <InstructorFeature
+                                title="Reports"
+                                subtitle="View course and student performance reports"
+                                icon="▥"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/instructor/inbox"
+                    element={
+                        <ProtectedRoute allowedRole="instructor">
+                            <InstructorFeature
+                                title="Messages"
+                                subtitle="Communicate with students and administrators"
+                                icon="✉"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/instructor/settings"
+                    element={
+                        <ProtectedRoute allowedRole="instructor">
+                            <InstructorFeature
+                                title="Settings"
+                                subtitle="Manage instructor account settings"
+                                icon="⚙"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+
+                {/* ========================= */}
+                {/* ADMIN */}
+                {/* ========================= */}
+
+                <Route
+                    path="/admin/dashboard"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <Dashboard role="admin" />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/users"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Users"
+                                subtitle="Manage all LearnPool users"
+                                icon="♙"
+                                buttonText="Add User"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/roles"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Roles"
+                                subtitle="Manage user roles and permissions"
+                                icon="◆"
+                                buttonText="Create Role"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/courses"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Courses"
+                                subtitle="Manage all courses"
+                                icon="▣"
+                                buttonText="Add Course"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/enrollments"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Enrollments"
+                                subtitle="Manage student course enrollments"
+                                icon="☷"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/classes"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Classes"
+                                subtitle="Manage all scheduled classes"
+                                icon="▣"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/assignments"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Assignments"
+                                subtitle="Manage platform assignments"
+                                icon="☷"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/files"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Files"
+                                subtitle="Manage uploaded platform files"
+                                icon="▰"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/announcements"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Announcements"
+                                subtitle="Create and manage announcements"
+                                icon="!"
+                                buttonText="New Announcement"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/reports"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Reports"
+                                subtitle="View platform reports and analytics"
+                                icon="▥"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/certificates"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Certificates"
+                                subtitle="Manage certificates"
+                                icon="◇"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/audit-logs"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="Audit Logs"
+                                subtitle="Track system activity"
+                                icon="▤"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/settings"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <AdminFeature
+                                title="System Settings"
+                                subtitle="Configure LearnPool system settings"
+                                icon="⚙"
+                            />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* FALLBACK */}
+
+                <Route
+                    path="*"
+                    element={
+                        <Navigate
+                            to="/login"
+                            replace
+                        />
+                    }
+                />
+
+            </Routes>
+
+        </BrowserRouter>
+    );
 }
 
 export default App;
