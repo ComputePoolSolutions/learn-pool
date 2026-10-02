@@ -27,6 +27,18 @@ import EditClass from "./pages/instructor/EditClass";
 
 import AdminClasses from "./pages/admin/Classes";
 
+/* =========================================================
+   ASSIGNMENT PAGES
+========================================================= */
+
+import AssignmentsPage
+    from "./features/assignments/pages/AssignmentsPage";
+
+import AssignmentDetailsPage
+    from "./features/assignments/pages/AssignmentDetailsPage";
+
+import AssignmentSubmitPage
+    from "./features/assignments/pages/AssignmentSubmitPage";
 
 import "./App.css";
 import "./styles.css";
@@ -41,39 +53,52 @@ function ProtectedRoute({
     allowedRole
 }) {
 
-    const token = localStorage.getItem("token");
+    const token =
+        localStorage.getItem("token");
 
     let user = {};
 
     try {
+
         user = JSON.parse(
             localStorage.getItem("user") || "{}"
         );
+
     } catch (error) {
+
         user = {};
+
     }
 
 
-    /* USER NOT LOGGED IN */
+    /* =====================================================
+       USER NOT LOGGED IN
+    ===================================================== */
 
     if (!token) {
+
         return (
             <Navigate
                 to="/login"
                 replace
             />
         );
+
     }
 
 
-    /* ROLE CHECK */
+    /* =====================================================
+       ROLE CHECK
+    ===================================================== */
 
     if (
         allowedRole &&
         user.role !== allowedRole
     ) {
 
-        if (user.role === "student") {
+        if (
+            user.role === "student"
+        ) {
 
             return (
                 <Navigate
@@ -85,7 +110,9 @@ function ProtectedRoute({
         }
 
 
-        if (user.role === "instructor") {
+        if (
+            user.role === "instructor"
+        ) {
 
             return (
                 <Navigate
@@ -97,7 +124,9 @@ function ProtectedRoute({
         }
 
 
-        if (user.role === "admin") {
+        if (
+            user.role === "admin"
+        ) {
 
             return (
                 <Navigate
@@ -115,6 +144,7 @@ function ProtectedRoute({
                 replace
             />
         );
+
     }
 
 
@@ -145,7 +175,9 @@ function StudentFeature({
             />
 
         </PortalLayout>
+
     );
+
 }
 
 
@@ -172,7 +204,9 @@ function InstructorFeature({
             />
 
         </PortalLayout>
+
     );
+
 }
 
 
@@ -199,7 +233,9 @@ function AdminFeature({
             />
 
         </PortalLayout>
+
     );
+
 }
 
 
@@ -217,7 +253,7 @@ function App() {
 
 
                 {/* =================================================
-                   PUBLIC
+                   PUBLIC ROUTES
                 ================================================= */}
 
                 <Route
@@ -272,7 +308,49 @@ function App() {
                 />
 
 
-                {/* MY COURSES */}
+                {/* =================================================
+                   STUDENT ASSIGNMENT DETAILS
+                ================================================= */}
+
+                <Route
+                    path="/student/assignments/:assignmentId"
+                    element={
+
+                        <ProtectedRoute
+                            allowedRole="student"
+                        >
+
+                            <AssignmentDetailsPage />
+
+                        </ProtectedRoute>
+
+                    }
+                />
+
+
+                {/* =================================================
+                   STUDENT ASSIGNMENT SUBMIT
+                ================================================= */}
+
+                <Route
+                    path="/student/assignments/:assignmentId/submit"
+                    element={
+
+                        <ProtectedRoute
+                            allowedRole="student"
+                        >
+
+                            <AssignmentSubmitPage />
+
+                        </ProtectedRoute>
+
+                    }
+                />
+
+
+                {/* =================================================
+                   MY COURSES
+                ================================================= */}
 
                 <Route
                     path="/student/courses"
@@ -295,10 +373,16 @@ function App() {
                 />
 
 
-                {/* COURSE DETAILS */}
+                {/* =================================================
+                   COURSE DETAILS
+                   
+                   IMPORTANT:
+                   This route uses /student/courses/:id
+                   so AssignmentCard can navigate here.
+                ================================================= */}
 
                 <Route
-                    path="/student/course/:id"
+                    path="/student/courses/:id"
                     element={
 
                         <ProtectedRoute
@@ -317,7 +401,9 @@ function App() {
                 />
 
 
-                {/* ASSIGNMENTS */}
+                {/* =================================================
+                   STUDENT ASSIGNMENTS
+                ================================================= */}
 
                 <Route
                     path="/student/assignments"
@@ -327,11 +413,7 @@ function App() {
                             allowedRole="student"
                         >
 
-                            <StudentFeature
-                                title="Assignments"
-                                subtitle="View, download and submit your assignments"
-                                icon="☷"
-                            />
+                            <AssignmentsPage />
 
                         </ProtectedRoute>
 
@@ -342,9 +424,6 @@ function App() {
                 {/* =================================================
                    STUDENT CLASSROOM
                 ================================================= */}
-
-
-                {/* Main classroom URL */}
 
                 <Route
                     path="/student/classroom"
@@ -362,7 +441,7 @@ function App() {
                 />
 
 
-                {/* Short classroom URL */}
+                {/* SHORT CLASSROOM URL */}
 
                 <Route
                     path="/classes"
@@ -398,7 +477,9 @@ function App() {
                 />
 
 
-                {/* STUDENT FILES */}
+                {/* =================================================
+                   STUDENT FILES
+                ================================================= */}
 
                 <Route
                     path="/student/files"
@@ -421,7 +502,9 @@ function App() {
                 />
 
 
-                {/* STUDENT INBOX */}
+                {/* =================================================
+                   STUDENT INBOX
+                ================================================= */}
 
                 <Route
                     path="/student/inbox"
@@ -443,7 +526,9 @@ function App() {
                 />
 
 
-                {/* STUDENT REPORTS */}
+                {/* =================================================
+                   STUDENT REPORTS
+                ================================================= */}
 
                 <Route
                     path="/student/reports"
@@ -465,7 +550,9 @@ function App() {
                 />
 
 
-                {/* STUDENT SETTINGS */}
+                {/* =================================================
+                   STUDENT SETTINGS
+                ================================================= */}
 
                 <Route
                     path="/student/settings"
@@ -487,7 +574,9 @@ function App() {
                 />
 
 
-                {/* CERTIFICATES */}
+                {/* =================================================
+                   STUDENT CERTIFICATES
+                ================================================= */}
 
                 <Route
                     path="/student/certificates"
@@ -583,9 +672,6 @@ function App() {
                    INSTRUCTOR CLASSROOM
                 ================================================= */}
 
-
-                {/* Existing sidebar route */}
-
                 <Route
                     path="/instructor/classroom"
                     element={
@@ -601,8 +687,6 @@ function App() {
                     }
                 />
 
-
-                {/* New classroom route */}
 
                 <Route
                     path="/instructor/classes"
@@ -701,7 +785,7 @@ function App() {
                 />
 
 
-                {/* INSTRUCTOR MESSAGES */}
+                {/* INSTRUCTOR INBOX */}
 
                 <Route
                     path="/instructor/inbox"
@@ -861,9 +945,7 @@ function App() {
                 />
 
 
-                {/* =================================================
-                   ADMIN CLASSROOM
-                ================================================= */}
+                {/* ADMIN CLASSES */}
 
                 <Route
                     path="/admin/classes"
@@ -1053,6 +1135,7 @@ function App() {
             </Routes>
 
         </BrowserRouter>
+
     );
 }
 
